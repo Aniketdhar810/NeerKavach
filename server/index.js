@@ -7,10 +7,23 @@ const connectDB = require("./config/db");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// CORS configuration for production
+const corsOptions = {
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    process.env.CLIENT_URL,
+    "https://neer-kavach-4o2v.vercel.app",
+    /\.vercel\.app$/
+  ].filter(Boolean),
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+};
 
 connectDB();
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(passport.initialize());
 
@@ -28,3 +41,6 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// Export for Vercel
+module.exports = app;
