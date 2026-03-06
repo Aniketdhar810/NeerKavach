@@ -23,16 +23,16 @@ const Navbar = () => {
         {/* Nav Links */}
         <div className="hidden md:flex items-center gap-10 text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
           <a className="hover:text-brand-blue transition-colors" href="#capabilities">
-            System
+            Surakshit
           </a>
           <a className="hover:text-brand-blue transition-colors" href="#capabilities">
-            Data Intelligence
+            Jal
           </a>
           <a className="hover:text-brand-blue transition-colors" href="#">
-            Network
+            Swasth
           </a>
           <a className="hover:text-brand-blue transition-colors" href="#">
-            Governance
+            Kal
           </a>
         </div>
 
