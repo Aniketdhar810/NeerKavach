@@ -1,11 +1,14 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
-const mainMenu = [
+const commonMenu = [
   { label: "Dashboard", icon: "dashboard", path: "/dashboard" },
-  { label: "Submit Test", icon: "file_upload", path: "/submit-test" },
   { label: "Hotspot Map", icon: "map", path: "/hotspot-map" },
-  { label: "My Reports", icon: "description", path: "/my-reports" },
+  { label: "Reports", icon: "description", path: "/my-reports" },
+];
+
+const reporterMenu = [
+  { label: "Submit Test", icon: "file_upload", path: "/submit-test" },
 ];
 
 const authorityMenu = [
@@ -34,6 +37,12 @@ const NavLink = ({ item, isActive }) => (
 
 const Sidebar = () => {
   const location = useLocation();
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const isReporter = user.role === "reporter";
+
+  const mainMenu = isReporter
+    ? [...commonMenu.slice(0, 1), ...reporterMenu, ...commonMenu.slice(1)]
+    : commonMenu;
 
   return (
     <aside className="w-64 flex-shrink-0 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 hidden lg:flex flex-col">

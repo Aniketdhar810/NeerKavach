@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
+import API from "../lib/api";
 
 const waterSourceOptions = [
   "Borewell",
@@ -59,16 +60,21 @@ const SubmitTest = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      // TODO: POST to backend API for prediction
-      console.log("Submitting water test:", form);
-      setTimeout(() => {
-        setSubmitting(false);
-        alert("Water sample submitted for analysis!");
-        navigate("/dashboard");
-      }, 1500);
-    } catch {
+      // Submit the report
+      const reportRes = await API.post("/reports", form);
+      const reportId = reportRes.data.report.reportId;
+
+      // Trigger AI prediction
+      const predRes = await API.post(`/prediction/${reportId}`);
+
       setSubmitting(false);
-      alert("Submission failed. Please try again.");
+      navigate("/prediction-result", {
+        state: { reportId, prediction: predRes.data },
+      });
+    } catch (error) {
+      setSubmitting(false);
+      const msg = error.response?.data?.message || "Submission failed. Please try again.";
+      alert(msg);
     }
   };
 

@@ -14,6 +14,7 @@ const Signup = () => {
     region: "",
     password: "",
     code: "",
+    role: "user",
   });
 
   const toggleTheme = () => {
@@ -64,6 +65,9 @@ const Signup = () => {
         email: form.email,
         username: form.name,
         password: form.password,
+        role: form.role,
+        department: form.department,
+        region: form.region,
       });
       alert("Account created successfully!");
       navigate("/signin");
@@ -172,6 +176,43 @@ const Signup = () => {
               {/* Step 1: Name, Email, Department, Region */}
               {step === 1 && (
                 <>
+                  {/* Role Selection */}
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold">I am registering as</label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setForm({ ...form, role: "user" })}
+                        className={`p-4 rounded-xl border-2 transition-all text-center ${
+                          form.role === "user"
+                            ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                            : "border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                        }`}
+                      >
+                        <span className="material-symbols-outlined text-2xl mb-1 block">
+                          person
+                        </span>
+                        <p className="font-bold text-sm">Common User</p>
+                        <p className="text-[10px] text-slate-400 mt-1">View reports & maps</p>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setForm({ ...form, role: "reporter" })}
+                        className={`p-4 rounded-xl border-2 transition-all text-center ${
+                          form.role === "reporter"
+                            ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                            : "border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                        }`}
+                      >
+                        <span className="material-symbols-outlined text-2xl mb-1 block">
+                          assignment_ind
+                        </span>
+                        <p className="font-bold text-sm">Reporter</p>
+                        <p className="text-[10px] text-slate-400 mt-1">ASHA worker / Health authority</p>
+                      </button>
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="space-y-2">
                       <label className="block text-sm font-semibold">

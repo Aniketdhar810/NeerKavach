@@ -1,93 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
-
-const reports = [
-  {
-    id: "WQ-IND-2024-892",
-    location: "Shivajinagar, Pune",
-    source: "Community Tank B",
-    date: "Oct 24, 2024",
-    riskLevel: "high",
-    riskPercent: 88,
-    disease: "Typhoid",
-    ph: 8.2,
-    turbidity: 5.4,
-    status: "reviewed",
-  },
-  {
-    id: "WQ-IND-2024-891",
-    location: "Indiranagar, BLR",
-    source: "Groundwater Bore",
-    date: "Oct 24, 2024",
-    riskLevel: "low",
-    riskPercent: 4,
-    disease: "None",
-    ph: 7.2,
-    turbidity: 0.8,
-    status: "reviewed",
-  },
-  {
-    id: "WQ-IND-2024-890",
-    location: "Mysuru Central",
-    source: "Municipal Tap",
-    date: "Oct 24, 2024",
-    riskLevel: "moderate",
-    riskPercent: 42,
-    disease: "Cholera",
-    ph: 6.8,
-    turbidity: 4.5,
-    status: "pending",
-  },
-  {
-    id: "WQ-IND-2024-889",
-    location: "Bellandur North",
-    source: "Surface Drain",
-    date: "Oct 23, 2024",
-    riskLevel: "high",
-    riskPercent: 92,
-    disease: "Diarrhea",
-    ph: 8.9,
-    turbidity: 18.2,
-    status: "reviewed",
-  },
-  {
-    id: "WQ-IND-2024-888",
-    location: "HSR Layout",
-    source: "Lakeside Well",
-    date: "Oct 23, 2024",
-    riskLevel: "low",
-    riskPercent: 28,
-    disease: "None",
-    ph: 7.4,
-    turbidity: 2.1,
-    status: "reviewed",
-  },
-  {
-    id: "WQ-IND-2024-887",
-    location: "Whitefield Ext",
-    source: "Tanker Supply",
-    date: "Oct 23, 2024",
-    riskLevel: "low",
-    riskPercent: 8,
-    disease: "None",
-    ph: 7.0,
-    turbidity: 1.2,
-    status: "pending",
-  },
-  {
-    id: "WQ-IND-2024-886",
-    location: "Dharavi District",
-    source: "Municipal Tap",
-    date: "Oct 22, 2024",
-    riskLevel: "high",
-    riskPercent: 88,
-    disease: "Diarrhea",
-    ph: 5.8,
-    turbidity: 8.4,
-    status: "reviewed",
-  },
-];
+import API from "../lib/api";
 
 const riskBadge = {
   low: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400",
@@ -102,21 +16,46 @@ const statusBadge = {
 
 const MyReports = () => {
   const [filter, setFilter] = useState("all");
+  const [reports, setReports] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        const endpoint = user.role === "reporter" ? "/reports/my" : "/reports";
+        const res = await API.get(endpoint);
+        setReports(res.data);
+      } catch (error) {
+        console.error("Failed to fetch reports:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchReports();
+  }, []);
 
   const filtered =
     filter === "all"
       ? reports
-      : reports.filter((r) => r.riskLevel === filter);
+      : reports.filter((r) => r.prediction?.riskLevel === filter);
 
   const counts = {
     all: reports.length,
-    high: reports.filter((r) => r.riskLevel === "high").length,
-    moderate: reports.filter((r) => r.riskLevel === "moderate").length,
-    low: reports.filter((r) => r.riskLevel === "low").length,
+    high: reports.filter((r) => r.prediction?.riskLevel === "high").length,
+    moderate: reports.filter((r) => r.prediction?.riskLevel === "moderate").length,
+    low: reports.filter((r) => r.prediction?.riskLevel === "low").length,
   };
 
   return (
     <DashboardLayout>
+      {loading && (
+        <div className="flex items-center justify-center py-20">
+          <span className="animate-spin material-symbols-outlined text-3xl text-blue-500">sync</span>
+        </div>
+      )}
+      {!loading && (
+        <>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -126,6 +65,7 @@ const MyReports = () => {
           </p>
         </div>
         <div className="flex items-center gap-3">
+          {JSON.parse(localStorage.getItem("user") || "{}").role === "reporter" && (
           <Link
             to="/submit-test"
             className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2"
@@ -133,6 +73,7 @@ const MyReports = () => {
             <span className="material-symbols-outlined text-sm">add</span>
             New Test
           </Link>
+          )}
         </div>
       </div>
 
@@ -196,35 +137,41 @@ const MyReports = () => {
             <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50 text-sm">
               {filtered.map((r) => (
                 <tr
-                  key={r.id}
+                  key={r.reportId}
                   className="hover:bg-slate-50 dark:hover:bg-slate-900/30 transition-colors"
                 >
                   <td className="px-6 py-4">
                     <span className="font-bold text-blue-500 text-xs">
-                      {r.id}
+                      {r.reportId}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-col">
-                      <span className="font-bold">{r.location}</span>
+                      <span className="font-bold">{r.locationName}</span>
                       <span className="text-[10px] text-slate-400">
-                        {r.source}
+                        {r.waterSource}
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 font-medium">{r.ph}</td>
+                  <td className="px-6 py-4 font-medium">{r.pH}</td>
                   <td className="px-6 py-4 font-medium text-slate-400">
                     {r.turbidity} NTU
                   </td>
                   <td className="px-6 py-4">
-                    <span
-                      className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase ${riskBadge[r.riskLevel]}`}
-                    >
-                      {r.riskPercent}% {r.riskLevel}
-                    </span>
+                    {r.prediction?.riskLevel ? (
+                      <span
+                        className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase ${riskBadge[r.prediction.riskLevel]}`}
+                      >
+                        {r.prediction.riskPercent}% {r.prediction.riskLevel}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-slate-400">—</span>
+                    )}
                   </td>
                   <td className="px-6 py-4 text-xs font-medium">
-                    {r.disease}
+                    {r.prediction?.diseases?.length
+                      ? r.prediction.diseases.sort((a, b) => b.probability - a.probability)[0].name
+                      : "—"}
                   </td>
                   <td className="px-6 py-4">
                     <span
@@ -234,11 +181,16 @@ const MyReports = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-xs text-slate-400">
-                    {r.date}
+                    {new Date(r.createdAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
                   </td>
                   <td className="px-6 py-4">
                     <Link
                       to="/prediction-result"
+                      state={{ reportId: r.reportId }}
                       className="text-blue-500 hover:text-blue-600 transition-colors"
                     >
                       <span className="material-symbols-outlined text-lg">
@@ -263,6 +215,8 @@ const MyReports = () => {
           </div>
         )}
       </div>
+        </>
+      )}
     </DashboardLayout>
   );
 };

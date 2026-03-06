@@ -34,7 +34,7 @@ exports.verifyCode = async (req, res) => {
 };
 
 exports.completeSignup = async (req, res) => {
-  const { email, username, password } = req.body;
+  const { email, username, password, role, department, region } = req.body;
 
   const user = await User.findOne({ email });
   if (!user || !user.isVerified)
@@ -47,6 +47,12 @@ exports.completeSignup = async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(password, salt);
   user.username = username;
+
+  if (role === "reporter" || role === "user") {
+    user.role = role;
+  }
+  if (department) user.department = department;
+  if (region) user.region = region;
 
   await user.save();
 
@@ -72,6 +78,9 @@ exports.login = (req, res) => {
       id: req.user._id,
       email: req.user.email,
       username: req.user.username,
+      role: req.user.role,
+      department: req.user.department,
+      region: req.user.region,
     },
   });
 };
