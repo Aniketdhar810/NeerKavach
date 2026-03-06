@@ -27,6 +27,7 @@ const initialForm = {
   bacteriaCount: "",
   fecalColiform: "Absent",
   totalColiform: "",
+  temperature: "",
   locationName: "",
   latitude: "",
   longitude: "",
@@ -298,6 +299,27 @@ const SubmitTest = () => {
                 </span>
               </div>
             </div>
+
+            {/* Temperature */}
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+                Water Temperature
+              </label>
+              <div className="relative">
+                <input
+                  name="temperature"
+                  type="number"
+                  step="0.1"
+                  placeholder="25.0"
+                  value={form.temperature}
+                  onChange={handleChange}
+                  className={inputClass}
+                />
+                <span className="absolute right-3 top-2.5 text-slate-400 text-xs font-medium">
+                  °C
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -341,7 +363,12 @@ const SubmitTest = () => {
                 </label>
                 <input
                   type="text"
-                  value="Dr. Aditi Sharma"
+                  value={(() => {
+                    try {
+                      const user = JSON.parse(localStorage.getItem("user") || "{}");
+                      return user.name || "Unknown Reporter";
+                    } catch { return "Unknown Reporter"; }
+                  })()}
                   disabled
                   className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 rounded-lg shadow-sm px-4 py-2.5 dark:text-slate-400 cursor-not-allowed"
                 />

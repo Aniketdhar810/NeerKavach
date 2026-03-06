@@ -18,24 +18,18 @@ function Dashboard() {
             Monitoring water quality risk levels across Karnataka State.
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center bg-white dark:bg-slate-800 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-            <span className="material-symbols-outlined text-sm mr-2 text-slate-400">
-              calendar_today
-            </span>
-            <span className="text-xs font-bold">
-              {new Date().toLocaleDateString("en-US", {
-                weekday: "short",
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              })}
-            </span>
-          </div>
-          <button className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2">
-            <span className="material-symbols-outlined text-sm">download</span>
-            Export Data
-          </button>
+        <div className="flex items-center bg-white dark:bg-slate-800 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <span className="material-symbols-outlined text-sm mr-2 text-slate-400">
+            calendar_today
+          </span>
+          <span className="text-xs font-bold">
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "short",
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })}
+          </span>
         </div>
       </div>
 

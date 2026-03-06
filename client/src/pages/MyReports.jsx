@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import API from "../lib/api";
 
@@ -15,9 +15,37 @@ const statusBadge = {
 };
 
 const MyReports = () => {
+  const navigate = useNavigate();
   const [filter, setFilter] = useState("all");
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Navigate to report detail
+  const handleReportClick = (report) => {
+    navigate("/prediction-result", {
+      state: {
+        reportId: report.reportId,
+        prediction: {
+          prediction: report.prediction,
+          waterTestSummary: {
+            waterSource: report.waterSource,
+            pH: report.pH,
+            turbidity: report.turbidity,
+            dissolvedOxygen: report.dissolvedOxygen,
+            nitrateLevel: report.nitrateLevel,
+            contaminantLevel: report.contaminantLevel,
+            bacteriaCount: report.bacteriaCount,
+            fecalColiform: report.fecalColiform,
+            totalColiform: report.totalColiform,
+            temperature: report.temperature,
+            locationName: report.locationName,
+            latitude: report.latitude,
+            longitude: report.longitude,
+          },
+        },
+      },
+    });
+  };
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -138,7 +166,8 @@ const MyReports = () => {
               {filtered.map((r) => (
                 <tr
                   key={r.reportId}
-                  className="hover:bg-slate-50 dark:hover:bg-slate-900/30 transition-colors"
+                  className="hover:bg-slate-50 dark:hover:bg-slate-900/30 transition-colors cursor-pointer"
+                  onClick={() => handleReportClick(r)}
                 >
                   <td className="px-6 py-4">
                     <span className="font-bold text-blue-500 text-xs">
@@ -188,15 +217,14 @@ const MyReports = () => {
                     })}
                   </td>
                   <td className="px-6 py-4">
-                    <Link
-                      to="/prediction-result"
-                      state={{ reportId: r.reportId }}
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleReportClick(r); }}
                       className="text-blue-500 hover:text-blue-600 transition-colors"
                     >
                       <span className="material-symbols-outlined text-lg">
                         arrow_forward
                       </span>
-                    </Link>
+                    </button>
                   </td>
                 </tr>
               ))}
