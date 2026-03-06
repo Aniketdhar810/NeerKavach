@@ -1,7 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import API from "../lib/api";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+};
 
 const waterSourceOptions = [
   "Borewell",
@@ -84,8 +95,14 @@ const SubmitTest = () => {
 
   return (
     <DashboardLayout>
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="space-y-8"
+      >
       {/* Page Title */}
-      <div className="mb-10">
+      <motion.div variants={itemVariants} className="mb-10">
         <h1 className="text-3xl font-extrabold tracking-tight mb-2">
           Submit Water Quality Test
         </h1>
@@ -93,9 +110,9 @@ const SubmitTest = () => {
           Enter laboratory results or field surveillance data to update regional
           water health metrics.
         </p>
-      </div>
+      </motion.div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <motion.form variants={itemVariants} onSubmit={handleSubmit} className="space-y-8">
         {/* ── Laboratory Metrics ── */}
         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 flex items-center gap-2">
@@ -460,10 +477,10 @@ const SubmitTest = () => {
             </button>
           </div>
         </div>
-      </form>
+      </motion.form>
 
       {/* ── Info Cards ── */}
-      <div className="mt-16 pt-8 border-t border-slate-200 dark:border-slate-800 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <motion.div variants={itemVariants} className="mt-16 pt-8 border-t border-slate-200 dark:border-slate-800 grid grid-cols-1 md:grid-cols-3 gap-8">
         <InfoCard
           icon="auto_graph"
           iconBg="bg-blue-50 dark:bg-blue-900/30"
@@ -485,7 +502,8 @@ const SubmitTest = () => {
           title="Alert System"
           text="If levels exceed safety threshold, automated SMS alerts are sent to local district officers."
         />
-      </div>
+      </motion.div>
+      </motion.div>
     </DashboardLayout>
   );
 };

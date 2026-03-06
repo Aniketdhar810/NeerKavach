@@ -1,8 +1,24 @@
 import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 
-// OpenRouter API key
-const OPENROUTER_API_KEY = "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";
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: { opacity: 1, x: 0 }
+};
+
+// Groq API key from environment variable
+const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 
 // Extract state from location string
 const extractState = (location) => {
@@ -104,15 +120,14 @@ Requirements:
 - Dates should be recent (Feb-Mar 2026)
 - imageKeyword should be one word for placeholder image`;
 
-      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+          "Authorization": `Bearer ${GROQ_API_KEY}`,
           "Content-Type": "application/json",
-          "HTTP-Referer": window.location.origin,
         },
         body: JSON.stringify({
-          model: "openai/gpt-3.5-turbo",
+          model: "llama-3.1-8b-instant",
           messages: [{ role: "user", content: prompt }],
           max_tokens: 1500,
           temperature: 0.8,
@@ -184,8 +199,13 @@ Requirements:
 
   return (
     <DashboardLayout>
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
       {/* Header */}
-      <div className="mb-6">
+      <motion.div variants={itemVariants} className="mb-6">
         <h1 className="text-2xl font-extrabold tracking-tight flex items-center gap-2">
           <span className="material-symbols-outlined text-blue-500">newspaper</span>
           Water News & Articles
@@ -194,10 +214,10 @@ Requirements:
           Stay informed about water quality, conservation tips, and health news in{" "}
           <span className="font-semibold text-blue-500">{userRegion}</span>
         </p>
-      </div>
+      </motion.div>
 
       {/* Category Filter */}
-      <div className="flex flex-wrap gap-2 mb-6">
+      <motion.div variants={itemVariants} className="flex flex-wrap gap-2 mb-6">
         <button
           onClick={() => setSelectedCategory("all")}
           className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
@@ -222,10 +242,10 @@ Requirements:
             {cat.label}
           </button>
         ))}
-      </div>
+      </motion.div>
 
       {/* Refresh Button */}
-      <div className="flex justify-end mb-4">
+      <motion.div variants={itemVariants} className="flex justify-end mb-4">
         <button
           onClick={() => fetchArticles(userRegion)}
           disabled={loading}
@@ -236,19 +256,25 @@ Requirements:
           </span>
           {loading ? "Loading..." : "Refresh Articles"}
         </button>
-      </div>
+      </motion.div>
 
       {/* Loading State */}
       {loading && (
-        <div className="flex flex-col items-center justify-center py-20">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex flex-col items-center justify-center py-20">
           <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mb-4"></div>
           <p className="text-slate-500 dark:text-slate-400">Fetching latest articles for {userRegion}...</p>
-        </div>
+        </motion.div>
       )}
 
       {/* Error State */}
       {error && !loading && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl p-6 text-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl p-6 text-center">
           <span className="material-symbols-outlined text-4xl text-red-500 mb-2">error</span>
           <p className="text-red-700 dark:text-red-400 font-medium">{error}</p>
           <button
@@ -257,14 +283,18 @@ Requirements:
           >
             Try Again
           </button>
-        </div>
+        </motion.div>
       )}
 
       {/* Articles Grid - Horizontal Cards */}
       {!loading && !error && (
-        <>
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
           {filteredArticles.length === 0 ? (
-            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-12 text-center">
+            <motion.div variants={itemVariants} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-12 text-center">
               <span className="material-symbols-outlined text-6xl text-slate-300 dark:text-slate-600 mb-4">
                 article
               </span>
@@ -272,12 +302,17 @@ Requirements:
               <p className="text-slate-500 dark:text-slate-400">
                 No articles in this category. Try selecting a different category.
               </p>
-            </div>
+            </motion.div>
           ) : (
             <div className="space-y-4">
               {filteredArticles.map((article, index) => (
-                <article
+                <motion.article
                   key={article.id || index}
+                  variants={cardVariants}
+                  initial="hidden"
+                  animate="visible"
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ scale: 1.01, y: -2 }}
                   className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-xl transition-all duration-300 group"
                 >
                   <div className="flex flex-col md:flex-row">
@@ -333,23 +368,23 @@ Requirements:
                       </div>
                     </div>
                   </div>
-                </article>
+                </motion.article>
               ))}
             </div>
           )}
 
           {/* Footer */}
           {filteredArticles.length > 0 && (
-            <div className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
+            <motion.div variants={itemVariants} className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
               Showing {filteredArticles.length} article{filteredArticles.length !== 1 ? "s" : ""}
               {selectedCategory !== "all" && ` in ${selectedCategory}`}
-            </div>
+            </motion.div>
           )}
-        </>
+        </motion.div>
       )}
 
       {/* Info Banner */}
-      <div className="mt-8 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/10 dark:to-cyan-900/10 border border-blue-200 dark:border-blue-800 rounded-2xl p-4">
+      <motion.div variants={itemVariants} className="mt-8 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/10 dark:to-cyan-900/10 border border-blue-200 dark:border-blue-800 rounded-2xl p-4">
         <div className="flex items-start gap-3">
           <span className="material-symbols-outlined text-blue-500">tips_and_updates</span>
           <div>
@@ -360,7 +395,8 @@ Requirements:
             </p>
           </div>
         </div>
-      </div>
+      </motion.div>
+      </motion.div>
     </DashboardLayout>
   );
 }

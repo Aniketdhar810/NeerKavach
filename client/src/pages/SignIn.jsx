@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import API from "../lib/api";
 import ThemeToggle from "../components/ThemeToggle";
 
@@ -35,17 +36,39 @@ const SignIn = () => {
 
   return (
     <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col relative overflow-x-hidden transition-colors duration-300">
+      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          animate={{ x: [0, 50, 0], y: [0, -30, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-brand-blue/20 to-brand-teal/10 rounded-full blur-3xl"
+        />
+        <motion.div
+          animate={{ x: [0, -30, 0], y: [0, 50, 0] }}
+          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-br from-brand-teal/20 to-brand-blue/10 rounded-full blur-3xl"
+        />
+      </div>
+
       {/* Header */}
-      <header className="p-8 flex justify-between items-center max-w-full mx-auto w-full z-10">
+      <motion.header 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="p-8 flex justify-between items-center max-w-full mx-auto w-full z-10"
+      >
         <Link to="/" className="flex items-center gap-2">
-          <div className="relative w-8 h-8 flex items-center justify-center">
+          <motion.div 
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            className="relative w-8 h-8 flex items-center justify-center"
+          >
             <span className="material-symbols-outlined text-primary text-3xl">
               shield
             </span>
             <span className="material-symbols-outlined text-secondary absolute text-sm bottom-0 right-0 fill-current">
               water_drop
             </span>
-          </div>
+          </motion.div>
           <div>
             <h1 className="font-bold text-2xl tracking-tight leading-none">
               NeerKavach
@@ -57,12 +80,22 @@ const SignIn = () => {
         </Link>
 
         <ThemeToggle darkMode={darkMode} onToggle={toggleTheme} />
-      </header>
+      </motion.header>
 
       {/* Main */}
       <main className="flex-grow flex items-center justify-center px-4 py-12 z-10">
-        <div className="w-full max-w-md">
-          <div className="glass-card p-10 md:p-12 rounded-4xl transition-all duration-300">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="w-full max-w-md"
+        >
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="glass-card p-10 md:p-12 rounded-4xl transition-all duration-300 backdrop-blur-xl bg-white/80 dark:bg-slate-800/80 shadow-2xl border border-white/20"
+          >
             <div className="mb-10">
               <h2 className="text-3xl font-bold mb-2 tracking-tight">
                 Sign In
@@ -75,7 +108,11 @@ const SignIn = () => {
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email */}
-              <div>
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 }}
+              >
                 <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-slate-500">
                   Official Email Address
                 </label>
@@ -89,10 +126,14 @@ const SignIn = () => {
                     setForm({ ...form, email: e.target.value })
                   }
                 />
-              </div>
+              </motion.div>
 
               {/* Password */}
-              <div>
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 }}
+              >
                 <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-slate-500">
                   Password
                 </label>
@@ -106,10 +147,15 @@ const SignIn = () => {
                     setForm({ ...form, password: e.target.value })
                   }
                 />
-              </div>
+              </motion.div>
 
               {/* Remember / Forgot */}
-              <div className="flex items-center justify-between">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="flex items-center justify-between"
+              >
                 <div className="flex items-center">
                   <input
                     type="checkbox"
@@ -125,13 +171,18 @@ const SignIn = () => {
                 >
                   Forgot access?
                 </a>
-              </div>
+              </motion.div>
 
               {/* Submit */}
-              <button
+              <motion.button
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={loading}
-                className="w-full bg-primary hover:bg-brand-deep text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group mt-4"
+                className="w-full bg-primary hover:bg-brand-deep text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 group mt-4"
               >
                 {loading ? (
                   <span className="animate-spin material-symbols-outlined">
@@ -145,7 +196,7 @@ const SignIn = () => {
                     </span>
                   </>
                 )}
-              </button>
+              </motion.button>
             </form>
 
             {/* Signup link */}
@@ -158,7 +209,7 @@ const SignIn = () => {
                 Create Account
               </Link>
             </p>
-          </div>
+          </motion.div>
 
           {/* Footer branding */}
           <div className="mt-12 text-center space-y-8">
@@ -181,7 +232,7 @@ const SignIn = () => {
               Secured by National Informatics Centre
             </p>
           </div>
-        </div>
+        </motion.div>
       </main>
     </div>
   );

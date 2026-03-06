@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import API from "../lib/api";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+};
 
 // Extract state from location string
 const extractState = (location) => {
@@ -145,8 +156,13 @@ function Alerts() {
 
   return (
     <DashboardLayout>
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <motion.div variants={itemVariants} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight flex items-center gap-2">
             <span className="material-symbols-outlined text-orange-500">notifications_active</span>
@@ -167,11 +183,16 @@ function Alerts() {
           <span className="material-symbols-outlined text-sm">refresh</span>
           Refresh
         </button>
-      </div>
+      </motion.div>
 
       {/* Email Status Banner */}
+      <AnimatePresence>
       {emailStatus && (
-        <div className={`mb-6 p-4 rounded-xl flex items-start gap-3 ${
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className={`mb-6 p-4 rounded-xl flex items-start gap-3 ${
           emailStatus.type === "success" 
             ? "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800" 
             : "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"
@@ -199,11 +220,12 @@ function Alerts() {
           >
             <span className="material-symbols-outlined text-sm">close</span>
           </button>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
 
       {/* Info Card */}
-      <div className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/10 dark:to-red-900/10 border border-orange-200 dark:border-orange-800 rounded-2xl p-4 mb-6">
+      <motion.div variants={itemVariants} className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/10 dark:to-red-900/10 border border-orange-200 dark:border-orange-800 rounded-2xl p-4 mb-6">
         <div className="flex items-start gap-3">
           <span className="material-symbols-outlined text-orange-500">info</span>
           <div>
@@ -214,16 +236,16 @@ function Alerts() {
             </p>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Loading State */}
       {loading ? (
-        <div className="flex items-center justify-center py-20">
+        <motion.div variants={itemVariants} className="flex items-center justify-center py-20">
           <div className="animate-spin w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full"></div>
-        </div>
+        </motion.div>
       ) : alerts.length === 0 ? (
         /* Empty State */
-        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-12 text-center">
+        <motion.div variants={itemVariants} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-12 text-center">
           <span className="material-symbols-outlined text-6xl text-green-500 mb-4">
             verified_user
           </span>
@@ -233,13 +255,15 @@ function Alerts() {
               ? `No high-risk water reports in ${userState} at this time.`
               : "No high-risk water reports found."}
           </p>
-        </div>
+        </motion.div>
       ) : (
         /* Alerts List */
-        <div className="space-y-4">
-          {alerts.map((alert) => (
-            <div
+        <motion.div variants={containerVariants} className="space-y-4">
+          {alerts.map((alert, index) => (
+            <motion.div
               key={alert._id || alert.reportId}
+              variants={itemVariants}
+              whileHover={{ scale: 1.01, y: -2 }}
               className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 hover:shadow-lg transition-shadow"
             >
               <div className="flex flex-col lg:flex-row lg:items-center gap-4">
@@ -335,18 +359,19 @@ function Alerts() {
                   </a>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
 
       {/* Summary Footer */}
       {!loading && alerts.length > 0 && (
-        <div className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
+        <motion.div variants={itemVariants} className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
           Showing {alerts.length} alert{alerts.length !== 1 ? "s" : ""} 
           {userState && ` in ${userState}`}
-        </div>
+        </motion.div>
       )}
+      </motion.div>
     </DashboardLayout>
   );
 }

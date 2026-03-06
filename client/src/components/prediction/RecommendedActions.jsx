@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 
-// OpenRouter API key
-const OPENROUTER_API_KEY = "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";
+// Groq API key from environment variable
+const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 
 const RecommendedActions = ({ riskLevel = "moderate", diseases = [], waterTestData = {} }) => {
   const [aiAdvice, setAiAdvice] = useState(null);
   const [loadingAI, setLoadingAI] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch AI advice from OpenRouter
+  // Fetch AI advice from Groq
   useEffect(() => {
     const fetchAIAdvice = async () => {
       setLoadingAI(true);
@@ -33,15 +33,14 @@ Rules:
 - For publicHealth: focus on community-level interventions
 - Tailor severity to ${riskLevel} risk level`;
 
-        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+            "Authorization": `Bearer ${GROQ_API_KEY}`,
             "Content-Type": "application/json",
-            "HTTP-Referer": window.location.origin,
           },
           body: JSON.stringify({
-            model: "openai/gpt-3.5-turbo",
+            model: "llama-3.1-8b-instant",
             messages: [{ role: "user", content: prompt }],
             max_tokens: 300,
             temperature: 0.7,

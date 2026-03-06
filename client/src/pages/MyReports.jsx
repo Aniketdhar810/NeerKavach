@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import API from "../lib/api";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+};
 
 const riskBadge = {
   low: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400",
@@ -83,9 +94,14 @@ const MyReports = () => {
         </div>
       )}
       {!loading && (
-        <>
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="space-y-6"
+        >
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <motion.div variants={itemVariants} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">My Reports</h1>
           <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -103,10 +119,10 @@ const MyReports = () => {
           </Link>
           )}
         </div>
-      </div>
+      </motion.div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <motion.div variants={itemVariants} className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
           { label: "Total Reports", value: counts.all, icon: "description", color: "bg-slate-100 dark:bg-slate-700" },
           { label: "High Risk", value: counts.high, icon: "error", color: "bg-red-100 dark:bg-red-900/30 text-red-600" },
@@ -126,10 +142,10 @@ const MyReports = () => {
             <p className="text-2xl font-extrabold mt-1">{s.value}</p>
           </div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2">
+      <motion.div variants={itemVariants} className="flex items-center gap-2">
         {["all", "high", "moderate", "low"].map((f) => (
           <button
             key={f}
@@ -143,10 +159,10 @@ const MyReports = () => {
             {f === "all" ? "All Reports" : `${f} Risk`}
           </button>
         ))}
-      </div>
+      </motion.div>
 
       {/* Reports Table */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-sm overflow-hidden">
+      <motion.div variants={itemVariants} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-slate-50 dark:bg-slate-900/50 text-[10px] font-bold uppercase tracking-wider text-slate-500">
@@ -242,8 +258,8 @@ const MyReports = () => {
             </p>
           </div>
         )}
-      </div>
-        </>
+      </motion.div>
+        </motion.div>
       )}
     </DashboardLayout>
   );

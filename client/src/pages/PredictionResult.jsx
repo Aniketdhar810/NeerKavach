@@ -1,9 +1,20 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import WaterTestSummary from "../components/prediction/WaterTestSummary";
 import RiskMatrix from "../components/prediction/RiskMatrix";
 import RecommendedActions from "../components/prediction/RecommendedActions";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.15 } }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+};
 
 // PDF Export function
 const exportToPDF = (reportId, waterTestSummary, predictionData) => {
@@ -163,8 +174,14 @@ const PredictionResult = () => {
 
   return (
     <DashboardLayout>
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="space-y-8"
+      >
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <nav className="flex items-center gap-2 text-sm text-slate-500 mb-2">
             <span>Surveillance</span>
@@ -200,17 +217,17 @@ const PredictionResult = () => {
             <span>Export CSV</span>
           </button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column — Test Summary */}
-        <div className="lg:col-span-4">
+        <motion.div variants={itemVariants} className="lg:col-span-4">
           <WaterTestSummary data={waterTestSummary} />
-        </div>
+        </motion.div>
 
         {/* Right Column — Risk + Actions */}
-        <div className="lg:col-span-8 space-y-8">
+        <motion.div variants={itemVariants} className="lg:col-span-8 space-y-8">
           <RiskMatrix
             diseases={predictionData.diseases || []}
             riskLevel={predictionData.riskLevel}
@@ -221,8 +238,9 @@ const PredictionResult = () => {
             diseases={predictionData.diseases || []}
             waterTestData={waterTestSummary}
           />
-        </div>
+        </motion.div>
       </div>
+      </motion.div>
     </DashboardLayout>
   );
 };
