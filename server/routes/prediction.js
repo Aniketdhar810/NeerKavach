@@ -14,4 +14,18 @@ router.post(
 // Any authenticated user: get hotspot data
 router.get("/hotspots", authMiddleware, predictionController.getHotspots);
 
+// Test route: manually trigger alerts for an existing report (admin/debug)
+router.post(
+  "/test/trigger-alerts/:reportId",
+  authMiddleware,
+  predictionController.triggerAlertsManually
+);
+
+// Test route: send a test email
+router.post(
+  "/test/email",
+  authMiddleware,
+  predictionController.testEmail
+);
+
 module.exports = router;

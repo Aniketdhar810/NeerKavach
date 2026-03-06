@@ -31,6 +31,7 @@ const reportSchema = new mongoose.Schema(
       default: "Absent",
     },
     totalColiform: { type: Number },
+    temperature: { type: Number, default: 25.0 },
     locationName: { type: String, required: true },
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
