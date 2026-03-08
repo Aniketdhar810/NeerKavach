@@ -6,11 +6,21 @@ This roadmap outlines the **current capabilities of the project and the future d
 
 ---
 
-# 🚀 Version 1.0 — Hackathon Release
+## 🌐 Current Deployment
+
+| Service | URL |
+|---------|-----|
+| **Frontend** | [https://neer-kavach-4o2v.vercel.app](https://neer-kavach-4o2v.vercel.app) |
+| **Backend API** | [https://neer-kavach-cyan.vercel.app](https://neer-kavach-cyan.vercel.app) |
+| **ML Model API** | [https://animan0810-neerkavach-ml.hf.space](https://animan0810-neerkavach-ml.hf.space) |
+
+---
+
+# 🚀 Version 1.0 — Current Release
 
 The first release focuses on building a functional system that collects water quality data and predicts potential disease risks.
 
-### Implemented Features
+### ✅ Implemented Features
 
 🧪 **Water Quality Report Submission**
 
@@ -29,78 +39,132 @@ Authorities can submit water testing reports containing parameters such as:
 
 🤖 **AI-Based Disease Risk Prediction**
 
-Using the submitted parameters, the ML model predicts the likelihood (%) of:
+Using the submitted parameters, the ML model (SVM + KNN Ensemble) predicts the likelihood (%) of:
 
 - Diarrheal Disease  
 - Cholera  
 - Typhoid  
 
-📊 **Monitoring Dashboard**
+📊 **Smart Monitoring Dashboard**
 
 Authorities can view:
 
 - Reports they submitted  
-- Prediction results  
-- Risk summaries
+- Prediction results with risk levels
+- Risk distribution charts
+- Surveillance insights
 
 🗺️ **Hotspot Risk Map**
 
-Locations with higher predicted disease risk are highlighted on a map to help authorities quickly identify vulnerable areas.
+Interactive Leaflet map with risk visualization:
 
-📢 **Automated Awareness Suggestions**
+🟢 Low Risk | 🟡 Moderate Risk | 🔴 High Risk
 
-After prediction, NeerKavach provides preventive recommendations such as:
+📢 **AI-Powered Recommendations**
 
-- Boiling drinking water  
-- Water chlorination  
-- Community hygiene measures
+Groq API integration provides context-aware preventive recommendations:
 
----
+- Household safety measures
+- Public health interventions
+- Community awareness guidelines
 
-# 🌱 Planned Improvements (v1.1 → v2.0)
+📧 **Email Alert System**
 
-Future versions aim to improve **prediction accuracy, usability, and real-world deployment capability**.
+Automated alerts sent to users in affected regions when high-risk water quality is detected.
 
----
+📰 **AI-Generated Blogs**
 
-## v1.1 — Improved Monitoring
+Region-specific water quality news and conservation tips powered by Groq AI.
 
-- Risk categorization (Low / Medium / High)
-- Advanced dashboard analytics
-- Historical data comparison
-- Exportable reports (PDF / CSV)
-- Better hotspot visualization
+🔐 **User Authentication**
 
----
-
-## v1.5 — Field Usability
-
-- Mobile responsive interface for field workers
-- Offline report submission
-- Multi-language support
-- Improved awareness recommendation engine
+- JWT-based secure authentication
+- Role-based access (Public Health, Citizen)
+- Email verification system
 
 ---
 
-## v2.0 — Smart Water Surveillance System
+# 🌱 Future Scope & Planned Improvements
 
-- Integration with low-cost water quality sensors
-- Automated contamination alerts
-- Real-time monitoring of water sources
-- AI-powered outbreak early warning system
-- Integration with government health monitoring systems
+The proposed system can be further enhanced to improve community participation, accessibility, and the accuracy of disease prediction.
+
+---
+
+## v1.1 — Community Knowledge Sharing Platform
+
+A future enhancement could integrate a community-driven feature where users can:
+
+- 📝 **Write and read blogs** about water contamination issues in their localities
+- 💬 **Share experiences** and discuss challenges with other communities
+- 📚 **Learn practical solutions** from real-life cases
+- 🤝 **Collaborate** on addressing similar problems
+
+This will help others learn practical solutions from real-life cases and build a knowledge base for water quality management.
+
+---
+
+## v1.5 — Geolocation-Based Risk Assessment
+
+The system can integrate geolocation features to make predictions more context-aware:
+
+- 📍 **Browser Geolocation API** integration for automatic location detection
+- 🌧️ **Rainfall Data APIs** to correlate precipitation with contamination risk
+- 🌡️ **Weather Integration** for temperature and humidity factors
+- 📈 **Dynamic Risk Scoring** that adjusts based on local environmental conditions
+
+For example, high rainfall in an area could increase the predicted risk of bacterial contamination, making the model more responsive to real-world conditions.
+
+---
+
+## v2.0 — Multilingual Mobile Interface
+
+To improve accessibility in rural and tribal areas:
+
+- 📱 **Native Mobile Application** (React Native / Flutter)
+- 🌐 **Multilingual Support** for regional Indian languages:
+  - Hindi, Bengali, Tamil, Telugu, Marathi, Gujarati, etc.
+- 📴 **Offline Mode** for remote areas with poor connectivity
+- 🔔 **Push Notifications** for instant alerts
+- 📸 **Image Upload** for visual documentation of water sources
+
+This will allow users to report water issues, receive alerts, and access awareness resources in their local languages.
+
+---
+
+## v2.5 — Smart Water Surveillance System
+
+- 🔌 **IoT Sensor Integration** with low-cost water quality sensors
+- 📡 **Real-time Monitoring** of water sources
+- ⚡ **Automated Contamination Alerts** with instant notifications
+- 🔄 **Continuous Data Pipeline** for live updates
+- 📊 **Advanced Analytics Dashboard** with trend analysis
+
+---
+
+## v3.0 — Government Integration & Scale
+
+With further development, the NeerKavach Smart Monitoring and Early Warning System can be expanded:
+
+- 🏛️ **Government Health Department Integration** for official reporting
+- 🗺️ **Multi-State Coverage** across India
+- 🚨 **Outbreak Early Warning System** with severity classification
+- 📋 **Compliance Reporting** for water quality standards
+- 🤝 **Inter-departmental Coordination** tools
+
+This will strengthen outbreak detection, enable faster intervention by authorities, and help reduce the spread of water-borne diseases in vulnerable communities.
 
 ---
 
 # ⚠️ Known Limitations / Technical Debt
 
-Due to hackathon time constraints, some areas require improvement:
+Areas requiring improvement:
 
-- Limited dataset used for ML model training
-- Prediction accuracy can improve with real-world data
-- Manual entry of water testing parameters
-- Map visualization currently supports basic hotspot identification
-- Backend prediction pipeline can be optimized for scalability
+- [ ] Limited dataset used for ML model training
+- [ ] Prediction accuracy can improve with real-world data
+- [ ] Manual entry of water testing parameters
+- [ ] Map visualization needs advanced clustering
+- [ ] Backend needs horizontal scaling support
+- [ ] No offline capability currently
 
 These will be addressed in future releases.
 
@@ -108,37 +172,50 @@ These will be addressed in future releases.
 
 # 🤝 Call for Contributors
 
-NeerKavach is designed as an **open-source project**, and we welcome contributions from developers, researchers, and public health enthusiasts.
+NeerKavach is an **open-source project**. We welcome contributions in:
 
-We are especially looking for contributors in the following areas:
+### 🧠 Machine Learning
+- Improve prediction accuracy with larger datasets
+- Implement deep learning models
+- Add anomaly detection for contamination spikes
+- Integrate environmental factors (weather, rainfall)
 
-### Machine Learning
-- Improve prediction accuracy
-- Train models with larger environmental datasets
-- Implement anomaly detection for contamination spikes
-
-### Web Development
+### 💻 Web Development
 - Improve dashboard UI/UX
-- Add advanced visualizations and charts
-- Improve performance and responsiveness
+- Add advanced data visualizations
+- Implement PWA for offline access
+- Performance optimization
 
-### Backend Development
-- Improve API structure
-- Implement scalable data pipelines
-- Add automated alert systems
+### 📱 Mobile Development
+- Build React Native / Flutter app
+- Implement offline-first architecture
+- Add multilingual support
 
-### Public Health Research
+### 🔧 Backend Development
+- Implement scalable microservices
+- Add IoT data ingestion pipeline
+- Real-time websocket notifications
+- API rate limiting and caching
+
+### 🔬 Public Health Research
 - Validate prediction models with epidemiological studies
 - Improve disease risk modeling
+- Regional contamination pattern analysis
 
 ---
 
 # 🌍 Long-Term Vision
 
-NeerKavach aims to become a **community-scale environmental health monitoring platform**.
+NeerKavach aims to become **India's leading community-scale environmental health monitoring platform**.
 
-By combining **water quality data, machine learning predictions, and geographic risk mapping**, the system can help authorities detect contamination early and prevent water-borne disease outbreaks.
+By combining **water quality data, machine learning predictions, geographic risk mapping, and community knowledge sharing**, the system can:
+
+- 🔍 Detect contamination early
+- ⚡ Enable rapid response
+- 🛡️ Prevent water-borne disease outbreaks
+- 📚 Build community knowledge
+- 🤝 Connect authorities with citizens
 
 The ultimate goal is simple:
 
-**Safer water. Healthier communities.**
+**💧 Safer water. 🏥 Healthier communities. 🇮🇳 Stronger India.**
