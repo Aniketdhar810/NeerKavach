@@ -38,6 +38,21 @@ app.get("/", (req, res) => {
   res.send("Server Running");
 });
 
+// Prevent Hugging Face ML API from sleeping by pinging it periodically
+const axios = require("axios");
+const ML_API_URL = process.env.ML_API_URL;
+if (ML_API_URL) {
+  setInterval(async () => {
+    try {
+      // Adjust endpoint as needed for your ML API
+      await axios.post(ML_API_URL, { ping: true });
+      console.log("Pinged ML API to keep it awake");
+    } catch (err) {
+      console.error("Failed to ping ML API:", err.message);
+    }
+  }, 5 * 60 * 1000); // Ping every 5 minutes
+}
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
